@@ -4,7 +4,7 @@ using System.Text;
 
 namespace BankingApplication
 {
-    class Transaction
+    public class Transaction
     {
         public double TransactionAmount { get; set; }
         public DateTime DateTime { get; set; }

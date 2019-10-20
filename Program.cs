@@ -20,7 +20,7 @@ namespace BankingApplication
 
         static void Main(string[] args)
         {
-            ExecuteUserInput();
+            //ExecuteUserInput();
             Customer cust = new Customer("jake", "hills", 5212);
             Customer cust1 = new Customer("blake", "rills", 5212);
             var checkingAccount = new CheckingAccount()
@@ -31,7 +31,11 @@ namespace BankingApplication
             };
             var generateAccount = new GenerateAccount(checkingAccount);
             generateAccount.OpenAccount(cust);
-            for(int i = 0; i < )
+            generateAccount.OpenAccount(cust1);
+            foreach(var customer in CustomerManager.customers)
+            {
+                Console.WriteLine(customer._customerID);
+            }
             //CheckingAccount checkingAccount = new CheckingAccount();
             //checkingAccount.Deposit(100.34);
             //string message = String.Format()

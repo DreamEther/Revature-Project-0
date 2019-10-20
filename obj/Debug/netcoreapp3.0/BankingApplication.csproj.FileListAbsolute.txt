@@ -9,3 +9,14 @@ C:\Repos\Revature Projects\Unit Testing\BankingApplication\BankingApplication\ob
 C:\Repos\Revature Projects\Unit Testing\BankingApplication\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.AssemblyInfo.cs
 C:\Repos\Revature Projects\Unit Testing\BankingApplication\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.dll
 C:\Repos\Revature Projects\Unit Testing\BankingApplication\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.pdb
+C:\Repos\Revature Projects\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.csprojAssemblyReference.cache
+C:\Repos\Revature Projects\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.AssemblyInfoInputs.cache
+C:\Repos\Revature Projects\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.AssemblyInfo.cs
+C:\Repos\Revature Projects\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.dll
+C:\Repos\Revature Projects\BankingApplication\obj\Debug\netcoreapp3.0\BankingApplication.pdb
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.exe
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.deps.json
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.runtimeconfig.json
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.runtimeconfig.dev.json
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.dll
+C:\Repos\Revature Projects\BankingApplication\bin\Debug\netcoreapp3.0\BankingApplication.pdb

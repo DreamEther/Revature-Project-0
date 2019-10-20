@@ -6,23 +6,48 @@ namespace BankingApplication
 {
     public class CheckingAccount : IAccount
     {
+        public List<Transaction> transactions = new List<Transaction>();
         public double InterestRate { get; set; }
         
+        public Customer CustomerID { get; set; }
+        public DateTime TermDepositStartDate { get; set; }
         public int AccountID { get; set; }
-        public double Balance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public double Balance { get; set; }
 
-        public void MakeDeposit()
+        public void MakeDeposit(double deposit, DateTime dateTime)
         {
             throw new NotImplementedException();
         }
 
-        public void MakeTermDeposit()
+        public void MakeTermDeposit(double deposit, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            if (deposit <= 0)
+            {
+                throw new System.ArgumentException("Deposit amount must be positive");
+            }
+            else if (deposit > 0)
+            {
+                Balance += deposit;
+            }
+            var completeDeposit = new Transaction(deposit, dateTime);
+            transactions.Add(completeDeposit);
         }
 
-        public void MakeWithdrawal()
+        public void MakeTermWithdrawal(double withdrawal, DateTime dateTime)
         {
+            if (withdrawal <= 0)
+            {
+                throw new System.ArgumentException("Withdrawal amount must be positive");
+            }
+            else if (withdrawal > 0)
+            {
+                Balance -= withdrawal;
+            }
+        }
+
+        public void MakeWithdrawal(double withdrawal, DateTime dateTime)
+        {
+
             throw new NotImplementedException();
         }
 
