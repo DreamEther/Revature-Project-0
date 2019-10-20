@@ -18,7 +18,7 @@ namespace BankingApplication
         {
             FirstName = firstName;
             LastName = lastName;
-            Pin = Pin;
+            Pin = pin;
             _customerID = Customer.numberOfCustomers; // setting first customer ID to 0
             Customer.numberOfCustomers++; // incrementing by 1 so that the next time we create a Customer object the ID will be 1 greater than the previous
         }

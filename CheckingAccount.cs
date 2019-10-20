@@ -37,11 +37,15 @@ namespace BankingApplication
         {
             if (withdrawal <= 0)
             {
-                throw new System.ArgumentException("Withdrawal amount must be positive");
+                throw new System.ArgumentException("Withdrawal amount must be positive.");
             }
             else if (withdrawal > 0)
             {
-                Balance -= withdrawal;
+                double newBalance = Balance - withdrawal;
+                if(newBalance < 0)
+                {
+                    throw new System.ArgumentException("You do not have sufficient funds for this withdrawal.");
+                }
             }
         }
 
