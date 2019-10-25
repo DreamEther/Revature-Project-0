@@ -48,22 +48,9 @@ namespace BankingApplication
                // _accountType = account.AccountType;
                 Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}", 
                     account.AccountID, account.AccountType, account.Balance);
-                Console.WriteLine("\nPlease press Enter to go back to the options menu...");
-                WaitForKey(ConsoleKey.Enter);
-                Console.Clear();
                 break;
             }
-            Program.ExecuteUserInput();
         }
-
-        void WaitForKey(ConsoleKey key)
-        {
-            while (Console.ReadKey(true).Key != key)
-            {
-                
-            }
-        }
-
 
         public Customer GetCustomer(int pin)
         {
