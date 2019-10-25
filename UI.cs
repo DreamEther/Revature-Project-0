@@ -20,6 +20,11 @@ namespace BankingApplication
             Program.ExecuteUserInput();
         }
 
+        public static string FirstCharToUpper(string input)
+        {
+            return input.First().ToString().ToUpper() + String.Join("", input.Skip(1));
+        }
+        
         public static void CreateCheckingAccount()
         {
             Console.Clear();
@@ -42,7 +47,7 @@ namespace BankingApplication
             Customer customer = null;
             foreach (var cust in CustomerManager.customers)
             {
-                if (firstName == cust.FirstName && lastName == cust.LastName && pinNumber == cust.Pin)
+                if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
                 {
                     customer = cust;
                     isFound = true;
@@ -54,6 +59,52 @@ namespace BankingApplication
                 var checkingAccount = new CheckingAccount();
                 var generateAccount = new AccountManager(checkingAccount, customer);
                 Console.WriteLine("You've successfully opened up a checking account with us!");
+                OnEnterPress();
+                Console.Clear();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+        }
+
+        public static void CreateBusinessAccount()
+        {
+            Console.Clear();
+            Console.WriteLine("You must sign in with your full name and pin before creating an account.");
+            Console.WriteLine("Please enter your first name: ");
+            string firstName = Console.ReadLine();
+            UI.StringOnlyCheck(firstName);
+            Console.WriteLine("Please enter your last name:");
+            string lastName = Console.ReadLine();
+            UI.StringOnlyCheck(lastName);
+            Console.WriteLine("Please enter your unique pin number");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            if (CustomerManager.customers.Count == 0)
+            {
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+            bool isFound = false;
+            Customer customer = null;
+            foreach (var cust in CustomerManager.customers)
+            {
+                if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
+                {
+                    customer = cust;
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound == true)
+            {
+                var businessAccount = new BusinessAccount();
+                var generateAccount = new AccountManager(businessAccount, customer);
+                Console.WriteLine("You've successfully opened up a business account with us!");
                 OnEnterPress();
                 Console.Clear();
                 Program.ExecuteUserInput();
@@ -136,9 +187,11 @@ namespace BankingApplication
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
             Console.Clear();
-            Customer customer = new Customer(firstName, lastName, pinNumber);
+            Customer customer = new Customer(firstName.ToLower(), lastName.ToLower(), pinNumber);
+            string firstNameFixed = FirstCharToUpper(customer.FirstName);
+            string lastNameFixed = FirstCharToUpper(customer.LastName);
             Console.WriteLine("Is the following information correct? " +
-                "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", customer.FirstName, customer.LastName, customer.Pin);
+                "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", firstNameFixed, lastNameFixed, customer.Pin);
             string answer = Console.ReadLine();
             Console.Clear();
             AddCustomerToList(customer, answer);

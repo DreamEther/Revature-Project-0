@@ -53,6 +53,11 @@ namespace BankingApplication
                         UI.CreateCheckingAccount();
                         break;
                 }
+                case UserAction.CreateBusiness:
+                {
+                        UI.CreateBusinessAccount();
+                        break;
+                }
                 case UserAction.Deposit:
                 {
                         UI.Deposit();

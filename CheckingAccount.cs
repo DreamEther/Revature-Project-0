@@ -17,16 +17,7 @@ namespace BankingApplication
             Balance = 0;
             checkingAccountID++;
         }
-        public override void MakeDeposit(decimal deposit, DateTime dateTime)
-        {
-            string depositString = deposit.ToString();
-            DepositString = "+$" + depositString;
-            DepositAmount = deposit;
-            DateOfTransaction = dateTime;
-            Balance += DepositAmount;
-            var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
-            transactions.Add(completeDeposit);
-        }
+        
 
         public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {

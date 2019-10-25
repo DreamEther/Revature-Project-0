@@ -40,7 +40,6 @@ namespace BankingApplication
                     UI.OnEnterPress();
                     Program.ExecuteUserInput();
                 }
-               // _accountType = account.AccountType;
                 Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}", 
                     account.AccountID, account.AccountType, account.Balance);
                 break;
@@ -89,15 +88,5 @@ namespace BankingApplication
         {
 
         }
-
-
-        //public void OpenAccount(Customer customer)
-        //{
-
-        //}
-        //public void Initialize()
-        //{
-        //    _accountType.OpenAccount();
-        ////}
     }
 }

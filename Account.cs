@@ -22,7 +22,16 @@ namespace BankingApplication
 
         public DateTime DateOfTransaction { get; set; }
 
-        public abstract void MakeDeposit(decimal deposit, DateTime dateTime);
+        public virtual void MakeDeposit(decimal deposit, DateTime dateTime)
+        {
+            string depositString = deposit.ToString();
+            DepositString = "+$" + depositString;
+            DepositAmount = deposit;
+            DateOfTransaction = dateTime;
+            Balance += DepositAmount;
+            var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
+            transactions.Add(completeDeposit);
+        }
 
         public abstract void MakeWithdrawal(decimal withdrawal, DateTime dateTime);
 

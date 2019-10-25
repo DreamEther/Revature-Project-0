@@ -20,16 +20,31 @@ namespace BankingApplication
             Balance = 0;
             businessAccountID++;
         }
-
-        public override void MakeDeposit(decimal deposit, DateTime dateTime)
-        {
-            Console.WriteLine("Placeholder");
-            
-        }
-
         public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            string withdrawalString = withdrawal.ToString();
+            WithdrawalString = "-$" + withdrawalString;
+            WithdrawalAmount = withdrawal;
+            DateOfTransaction = dateTime;
+            decimal newBalance = Balance - WithdrawalAmount;
+            if (WithdrawalAmount <= 0)
+            {
+                Console.WriteLine("Withdrawal amount must be positive.");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else if (WithdrawalAmount > 0 && newBalance < 0)
+            {
+                
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                Balance -= WithdrawalAmount;
+            }
+            var completeDeposit = new Transaction(Balance, WithdrawalString, DepositAmount, DateOfTransaction);
+            transactions.Add(completeDeposit);
         }
     }
 }
