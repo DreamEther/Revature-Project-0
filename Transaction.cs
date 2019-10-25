@@ -6,13 +6,20 @@ namespace BankingApplication
 {
     public class Transaction
     {
-        public double TransactionAmount { get; set; }
+        public decimal TransactionAmount { get; set; }
         public DateTime DateTime { get; set; }
-
-        public Transaction(double transactionAmount, DateTime dateTime)
+        private Account _account;
+        public Transaction(decimal transactionAmount, DateTime dateTime)
         {
             TransactionAmount = transactionAmount;
             DateTime = dateTime;
+        }
+
+        public void DisplayListOfTransactions(Account account)
+        {
+            _account = account;
+            Console.WriteLine($"{_account.AccountType} {_account.AccountID} {_account.Balance}");
+
         }
     }
 }

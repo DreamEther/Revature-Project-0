@@ -6,20 +6,22 @@ namespace BankingApplication
 {
     public class Customer
     {
+       // public Dictionary<int, Account> listOfAccounts = new Dictionary<int, Account>();
 
-        static int numberOfCustomers = 0;
+        public List<Account> listOfAccounts = new List<Account>();
+        static int numberOfCustomers = 0000;
 
-        public int _customerID;
+        public int ID { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public int Pin { get; set; }
+        public int Pin { get; set;}
 
         public Customer(string firstName, string lastName, int pin)
         {
             FirstName = firstName;
             LastName = lastName;
             Pin = pin;
-            _customerID = Customer.numberOfCustomers; // setting first customer ID to 0
+            ID = Customer.numberOfCustomers; // setting first customer ID to 0
             Customer.numberOfCustomers++; // incrementing by 1 so that the next time we create a Customer object the ID will be 1 greater than the previous
         }
 

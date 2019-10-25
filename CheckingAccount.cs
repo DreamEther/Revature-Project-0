@@ -4,55 +4,43 @@ using System.Text;
 
 namespace BankingApplication
 {
-    public class CheckingAccount : IAccount
+    public class CheckingAccount : Account
     {
-        public List<Transaction> transactions = new List<Transaction>();
-        public double InterestRate { get; set; }
-        
-        public Customer CustomerID { get; set; }
-        public DateTime TermDepositStartDate { get; set; }
-        public int AccountID { get; set; }
-        public double Balance { get; set; }
+        private static int checkingAccountID = 1000;
+        //public Customer CustomerID { get; set; }
 
-        public void MakeDeposit(double deposit, DateTime dateTime)
+        public CheckingAccount()
         {
-            throw new NotImplementedException();
+            AccountType = "Checking Account";
+            AccountID = checkingAccountID;
+            InterestRate = 5;
+            Balance = 0;
+            checkingAccountID++;
         }
-
-        public void MakeTermDeposit(double deposit, DateTime dateTime)
+        public override void MakeDeposit(decimal deposit, DateTime dateTime)
         {
-            if (deposit <= 0)
-            {
-                throw new System.ArgumentException("Deposit amount must be positive");
-            }
-            else if (deposit > 0)
-            {
-                Balance += deposit;
-            }
-            var completeDeposit = new Transaction(deposit, dateTime);
+            DepositAmount = deposit;
+            DateOfTransaction = dateTime;
+            Balance += deposit;
+            var completeDeposit = new Transaction(DepositAmount, DateOfTransaction);
             transactions.Add(completeDeposit);
         }
 
-        public void MakeTermWithdrawal(double withdrawal, DateTime dateTime)
-        {
-            if (withdrawal <= 0)
-            {
-                throw new System.ArgumentException("Withdrawal amount must be positive.");
-            }
-            else if (withdrawal > 0)
-            {
-                double newBalance = Balance - withdrawal;
-                if(newBalance < 0)
-                {
-                    throw new System.ArgumentException("You do not have sufficient funds for this withdrawal.");
-                }
-            }
-        }
-
-        public void MakeWithdrawal(double withdrawal, DateTime dateTime)
+        public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
 
-            throw new NotImplementedException();
+            WithdrawalAmount = withdrawal;
+            DateOfTransaction = dateTime;
+            Balance -= withdrawal;
+            if(Balance <= 0)
+            {
+                Balance *= InterestRate;
+                Console.WriteLine("You've overdrafted your account. Interest  of 5% will be calculated accordingly...");
+                Console.WriteLine("Press Enter to see ");
+
+            }
+            var completeDeposit = new Transaction(DepositAmount, DateOfTransaction);
+            transactions.Add(completeDeposit);
         }
 
         public void OpenAccount()

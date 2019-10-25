@@ -4,34 +4,29 @@ using System.Text;
 
 namespace BankingApplication
 {
-    public class BusinessAccount : IAccount
+    public class BusinessAccount : Account
     {
+        private Account accountType;
         public int Loan { get; set; }
-        public int AccountID { get; set; }
-        public double Balance { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public DateTime TermDepositStartDate { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
-        //public void OpenAccount(Customer customer)
-        //{
-
-        //}
-
-        public void MakeDeposit(double deposit, DateTime dateTime)
+        //   public new string AccountType { get; set; } // if we do this we are overriding the property, and we would only want 
+        // to do this if we would have specific conditions that we need to create for the getters and setters
+        //   public string AccountType { get; set; } // this would redefine the property we have in our base class, which we dont want to do. 
+        //we simply want to set a value for it for this specific instance
+        // which needs to be done inside a constructor. 
+        public BusinessAccount()
         {
-            throw new NotImplementedException();
+            accountType.AccountType = "Bus"; // is this the same as setting a value for the Property below?
+            AccountType = "Busin";
         }
 
-        public void MakeTermDeposit(double deposit, DateTime dateTime)
+        public override void MakeDeposit(decimal deposit, DateTime dateTime)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Placeholder");
+            
         }
 
-        public void MakeTermWithdrawal(double withdrawal, DateTime dateTime)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void MakeWithdrawal(double withdrawal, DateTime dateTime)
+        public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
             throw new NotImplementedException();
         }
