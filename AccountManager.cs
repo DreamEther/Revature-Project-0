@@ -7,24 +7,13 @@ namespace BankingApplication
 {
     public class AccountManager
     {
-        //private int _accountID;
-        //private int _customerID;
         private Account _account;
         private Customer _customer;
-        static int numberOfAccounts = 0;
-        private string _accountType;
-        private int _accountID;
-        //private int _accountID;
         public AccountManager(Account account, Customer customer)
         {
             _account = account; // set correct account type
-            //_customerID = customer.CustomerID;
-            //_accountType = account.AccountType;
             _account.CustomerID = customer.ID;
             customer.listOfAccounts.Add(_account); //add account to the specific customers instance listOfAccounts
-            _accountID = account.AccountID;// Give the first account made an ID of 0
-            //AccountManager.numberOfAccounts++; //increment the static number by 1 so the next time this method is called, a new _accountID will be generated. 
-            //_accountID = account.AccountID;
         }
 
         public AccountManager()
@@ -45,6 +34,12 @@ namespace BankingApplication
             Console.Clear();
             foreach(var account in customer.listOfAccounts)
             {
+                if (customer.listOfAccounts == null)
+                {
+                    Console.WriteLine("You have no open accounts! Please return to the main menu to apply for an account");
+                    UI.OnEnterPress();
+                    Program.ExecuteUserInput();
+                }
                // _accountType = account.AccountType;
                 Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}", 
                     account.AccountID, account.AccountType, account.Balance);
@@ -52,6 +47,15 @@ namespace BankingApplication
             }
         }
 
+        public void DisplayListOfTransactions(Account account)
+        {
+            _account = account;
+            foreach (var transaction in _account.transactions)
+            {
+                Console.WriteLine($"{_account.AccountType} {_account.AccountID} {_account.Balance}");
+            }
+
+        }
         public Customer GetCustomer(int pin)
         {
             Customer customer = null;
@@ -66,6 +70,21 @@ namespace BankingApplication
             return customer;
         }
 
+        public void CloseAccount(Account account, Customer customer)
+        {
+            _customer = customer;
+            _account = account;
+            if(_account.Balance > 0)
+            {
+                Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
+            }
+            _customer.listOfAccounts.Remove(_account);
+            Console.WriteLine($"Account {_account.AccountID} has been closed.");
+        }
+        public void Transfer(Account account1, Account account2)
+        {
+
+        }
         public void ListOfTransactionsPerAccount(Customer customer)
         {
 

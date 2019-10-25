@@ -13,12 +13,7 @@ namespace BankingApplication
         {
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
-            int pinNumber;
-            while (pin.Length != 4 || !Int32.TryParse(pin, out pinNumber)) // need this condition to continuosly execute if user enters more than 4 numbers
-            {
-                Console.WriteLine("Incorrect Format: Please enter a unique user Pin that is 4 numbers long:");
-                pin = Console.ReadLine();
-            }
+            int pinNumber = CheckPin(pin);
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             OnEnterPress();
@@ -27,8 +22,8 @@ namespace BankingApplication
 
         public static void CreateCheckingAccount()
         {
-            Console.WriteLine(CustomerManager.customers.Count);
-            Console.WriteLine("You must sign in with your full name and pin before creating an account:");
+            Console.Clear();
+            Console.WriteLine("You must sign in with your full name and pin before creating an account.");
             Console.WriteLine("Please enter your first name: ");
             string firstName = Console.ReadLine();
             UI.StringOnlyCheck(firstName);
@@ -44,25 +39,30 @@ namespace BankingApplication
                 Program.ExecuteUserInput();
             }
             bool isFound = false;
+            Customer customer = null;
             foreach (var cust in CustomerManager.customers)
             {
                 if (firstName == cust.FirstName && lastName == cust.LastName && pinNumber == cust.Pin)
                 {
+                    customer = cust;
                     isFound = true;
+                    break;
                 }
-                if (isFound == true)
-                {
-                    var checkingAccount = new CheckingAccount();
-                    var generateAccount = new AccountManager(checkingAccount, cust);
-                    Console.WriteLine("You've successfully opened up a checking account with us!");
-                    Program.ExecuteUserInput();
-                }
-                else
-                {
-                    Console.Clear();
-                    Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
-                    Program.ExecuteUserInput();
-                }
+            }
+            if (isFound == true)
+            {
+                var checkingAccount = new CheckingAccount();
+                var generateAccount = new AccountManager(checkingAccount, customer);
+                Console.WriteLine("You've successfully opened up a checking account with us!");
+                OnEnterPress();
+                Console.Clear();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
             }
         }
         public static void ListTransactions()
@@ -75,14 +75,54 @@ namespace BankingApplication
             Customer customer = accountManager.GetCustomer(pinNumber);
             Console.WriteLine("To see a list of all transactions for an account, please enter the appropriate AccountID:");
             var answer = Console.ReadLine();
-            int answerNum = UI.CheckAccountNumber(answer);
+            int answerNum = CheckAccountNumber(answer);
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
-            Console.WriteLine($"{acc.AccountType} - {acc.AccountID}: Current Balance: ${acc.Balance}");
+            Console.WriteLine($"{acc.AccountType}, Account ID:{acc.AccountID} Current Balance: ${acc.Balance}");
+           // accountManager.DisplayListOfTransactions(acc);
             var listOfTransactionsInDes = acc.transactions.OrderByDescending(x => x.DateTime).ToList();
             foreach (var transaction in listOfTransactionsInDes)
             {
-                Console.WriteLine($"Deposit of: ${transaction.TransactionAmount} on {transaction.DateTime}");
+                Console.WriteLine($"{transaction.TransactionAsString} on {transaction.DateTime}  Balance: {transaction.newBalance}");
             }
+        }
+
+        public static void CloseAccount()
+        {
+            Console.WriteLine("Please enter your unique user Pin:");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            AccountManager accountManager = new AccountManager();
+            accountManager.ListOfAccountsByCustomerPin(pinNumber);
+            Customer customer = accountManager.GetCustomer(pinNumber);
+            Console.WriteLine("Please enter the AccountID for the account you wish to close: ");
+            var answer = Console.ReadLine();
+            int answerNum = CheckAccountNumber(answer);
+            Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
+            accountManager.CloseAccount(acc, customer);
+            Program.ExecuteUserInput();
+        }
+        public static void Withdraw()
+        {
+            Console.WriteLine("Please enter your unique user Pin:");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            AccountManager accountManager = new AccountManager();
+            accountManager.ListOfAccountsByCustomerPin(pinNumber);
+            Customer customer = accountManager.GetCustomer(pinNumber);
+            Console.WriteLine("Please type in the account ID for which you'd like to make a withdrawal");
+            var answer = Console.ReadLine();
+            int answerNum = CheckAccountNumber(answer);         
+            Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
+            Console.Write("Please enter the amount you would like to withdraw from Account: {0} \n$", acc.AccountID);
+            var stringOutput = Console.ReadLine();
+            decimal output;
+            while (!Decimal.TryParse(stringOutput, out output)) // need this condition to continuosly execute if user enters more than 4 numbers
+            {
+                Console.WriteLine("Incorrect Format: Please enter the amount you would like to withdraw: $");
+                stringOutput = Console.ReadLine();
+            }
+            acc.MakeWithdrawal(output, DateTime.Now);
+            Program.ExecuteUserInput();
         }
         public static void RegistrationProcess()
         {
@@ -100,6 +140,7 @@ namespace BankingApplication
             Console.WriteLine("Is the following information correct? " +
                 "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", customer.FirstName, customer.LastName, customer.Pin);
             string answer = Console.ReadLine();
+            Console.Clear();
             AddCustomerToList(customer, answer);
 
         }
@@ -109,7 +150,8 @@ namespace BankingApplication
             {
                 CustomerManager.customers.Add(customer);
                 Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
-                //Console.WriteLine(CustomerManager.customers.Count);
+                OnEnterPress();
+                Console.Clear();
                 Program.ExecuteUserInput();
             }
             else if (answer.Equals("No", StringComparison.InvariantCultureIgnoreCase))
@@ -142,7 +184,7 @@ namespace BankingApplication
                 answer = Console.ReadLine();
             }
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
-            Console.WriteLine("Please enter the amount you would like to deposit into Account: {0} \n$", acc.AccountID);
+            Console.Write("Please enter the amount you would like to deposit into Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
             decimal output;
             while (!Decimal.TryParse(stringOutput, out output)) // need this condition to continuosly execute if user enters more than 4 numbers

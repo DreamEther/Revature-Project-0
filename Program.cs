@@ -16,7 +16,8 @@ namespace BankingApplication
             Withdrawal,
             Transfer,
             DisplayAccounts,
-            DisplayTransactions
+            DisplayTransactions,
+            CloseAccount
         };
         
         static void Main(string[] args)
@@ -28,7 +29,8 @@ namespace BankingApplication
 
             Console.WriteLine("Please select one of the following options: \n " +
                "1: Register as a customer\n 2: Create Checking Account\n 3: Create Business Account\n 4: Make a deposit\n" +
-               " 5: Make a withdrawal\n 6: Make a transfer\n 7: Display a list of your accounts\n 8: Display a list of your transactions");
+               " 5: Make a withdrawal\n 6: Make a transfer\n 7: Display a list of your accounts\n 8: Display a list of your transactions\n" +
+               " 9: Close an account");
             string userInput = Console.ReadLine();
             int answer1;
             while(!int.TryParse(userInput, out answer1))
@@ -56,6 +58,11 @@ namespace BankingApplication
                         UI.Deposit();
                         break;
                 }
+                case UserAction.Withdrawal:
+                    {
+                        UI.Withdraw();
+                        break;
+                    }
                 case UserAction.DisplayAccounts:
                     {
                         UI.DisplayAccountsByCustomer();
@@ -64,6 +71,11 @@ namespace BankingApplication
                 case UserAction.DisplayTransactions:
                     {
                         UI.ListTransactions();
+                        break;
+                    }
+                case UserAction.CloseAccount:
+                    {
+                        UI.CloseAccount();
                         break;
                     }
             }           

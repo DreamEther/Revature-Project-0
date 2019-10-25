@@ -19,38 +19,41 @@ namespace BankingApplication
         }
         public override void MakeDeposit(decimal deposit, DateTime dateTime)
         {
+            string depositString = deposit.ToString();
+            DepositString = "+$" + depositString;
             DepositAmount = deposit;
             DateOfTransaction = dateTime;
-            Balance += deposit;
-            var completeDeposit = new Transaction(DepositAmount, DateOfTransaction);
+            Balance += DepositAmount;
+            var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
             transactions.Add(completeDeposit);
         }
 
         public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
-
+            string withdrawalString= withdrawal.ToString();
+            WithdrawalString= "-$" + withdrawalString;
             WithdrawalAmount = withdrawal;
             DateOfTransaction = dateTime;
-            Balance -= withdrawal;
-            if(Balance <= 0)
+            decimal newBalance = Balance - WithdrawalAmount;
+            if (WithdrawalAmount <= 0)
             {
-                Balance *= InterestRate;
-                Console.WriteLine("You've overdrafted your account. Interest  of 5% will be calculated accordingly...");
-                Console.WriteLine("Press Enter to see ");
-
+                Console.WriteLine("Withdrawal amount must be positive.");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
             }
-            var completeDeposit = new Transaction(DepositAmount, DateOfTransaction);
+            else if (WithdrawalAmount > 0 && newBalance < 0)
+            {
+                    Console.WriteLine("You do not have sufficient funds for this withdrawal.");
+                    UI.OnEnterPress();
+                    Program.ExecuteUserInput();
+            }
+            else
+            {
+                Balance -= WithdrawalAmount;
+            }
+            var completeDeposit = new Transaction(Balance, WithdrawalString, DepositAmount, DateOfTransaction);
             transactions.Add(completeDeposit);
         }
 
-        public void OpenAccount()
-        {
-
-        }
-        //public void Deposit(double deposit)
-        //{
-        //    DepositAmount = deposit;
-        //    Console.WriteLine("You've made a deposit of $" + deposit);
-        //}
     }
 }
