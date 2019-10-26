@@ -32,7 +32,7 @@ namespace BankingApplication
             var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
             transactions.Add(completeDeposit);
         }
-
+      
         public abstract void MakeWithdrawal(decimal withdrawal, DateTime dateTime);
 
     }

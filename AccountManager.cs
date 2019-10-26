@@ -8,7 +8,9 @@ namespace BankingApplication
     public class AccountManager
     {
         private Account _account;
+        private Loan _loan;
         private Customer _customer;
+        private decimal _amount;
         public AccountManager(Account account, Customer customer)
         {
             _account = account; // set correct account type
@@ -16,6 +18,12 @@ namespace BankingApplication
             customer.listOfAccounts.Add(_account); //add account to the specific customers instance listOfAccounts
         }
 
+        public AccountManager(Loan loan, Customer customer)
+        {
+            _loan = loan;
+            _loan.CustomerID = customer.ID;
+            customer.listOfLoans.Add(_loan);
+        }
         public AccountManager()
         {
         }
@@ -40,9 +48,12 @@ namespace BankingApplication
                     UI.OnEnterPress();
                     Program.ExecuteUserInput();
                 }
-                Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}", 
+                else
+                {
+                    Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}",
                     account.AccountID, account.AccountType, account.Balance);
-                break;
+                }
+             
             }
         }
 
@@ -80,9 +91,11 @@ namespace BankingApplication
             _customer.listOfAccounts.Remove(_account);
             Console.WriteLine($"Account {_account.AccountID} has been closed.");
         }
-        public void Transfer(Account account1, Account account2)
+        public void Transfer(Account account1, Account account2, decimal withdrawalAmount)
         {
-
+            _amount = withdrawalAmount;
+            account1.MakeWithdrawal(_amount, DateTime.Now);
+            account2.MakeDeposit(withdrawalAmount, DateTime.Now);
         }
         public void ListOfTransactionsPerAccount(Customer customer)
         {

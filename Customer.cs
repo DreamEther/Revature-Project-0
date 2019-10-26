@@ -9,6 +9,7 @@ namespace BankingApplication
        // public Dictionary<int, Account> listOfAccounts = new Dictionary<int, Account>();
 
         public List<Account> listOfAccounts = new List<Account>();
+        public List<Loan> listOfLoans = new List<Loan>();
         static int numberOfCustomers = 0000;
 
         public int ID { get; set; }

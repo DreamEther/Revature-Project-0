@@ -12,11 +12,13 @@ namespace BankingApplication
             Register = 1,
             CreateChecking,
             CreateBusiness,
+            CreateCD,
             Deposit,
             Withdrawal,
             Transfer,
             DisplayAccounts,
             DisplayTransactions,
+            TakeLoan,
             CloseAccount
         };
         
@@ -28,9 +30,9 @@ namespace BankingApplication
         {
 
             Console.WriteLine("Please select one of the following options: \n " +
-               "1: Register as a customer\n 2: Create Checking Account\n 3: Create Business Account\n 4: Make a deposit\n" +
-               " 5: Make a withdrawal\n 6: Make a transfer\n 7: Display a list of your accounts\n 8: Display a list of your transactions\n" +
-               " 9: Close an account");
+               "1: Register as a customer\n 2: Create Checking Account\n 3: Create Business Account\n 4: Create a Certificate of Deposit\n " +
+               "5: Make a deposit\n" +" 6: Make a withdrawal\n 7: Make a transfer\n 8: Display a list of your accounts\n 9: Display a list of your transactions\n" +
+               " 10: Take out a loan\n 11: Close an account");
             string userInput = Console.ReadLine();
             int answer1;
             while(!int.TryParse(userInput, out answer1))
@@ -58,6 +60,16 @@ namespace BankingApplication
                         UI.CreateBusinessAccount();
                         break;
                 }
+                case UserAction.CreateCD:
+                {
+                        UI.CreateCDAccount();
+                        break;
+                }
+                case UserAction.TakeLoan:
+                {
+                        //UI.TakeOutLoan();
+                        break;
+                }
                 case UserAction.Deposit:
                 {
                         UI.Deposit();
@@ -66,6 +78,11 @@ namespace BankingApplication
                 case UserAction.Withdrawal:
                     {
                         UI.Withdraw();
+                        break;
+                    }
+                case UserAction.Transfer:
+                    {
+                        UI.MakeTransfer();
                         break;
                     }
                 case UserAction.DisplayAccounts:

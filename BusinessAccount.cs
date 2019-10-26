@@ -16,7 +16,7 @@ namespace BankingApplication
         {
             AccountType = "Business";
             AccountID = businessAccountID;
-            InterestRate = 5;
+            InterestRate = (decimal)0.05;
             Balance = 0;
             businessAccountID++;
         }
@@ -26,25 +26,30 @@ namespace BankingApplication
             WithdrawalString = "-$" + withdrawalString;
             WithdrawalAmount = withdrawal;
             DateOfTransaction = dateTime;
-            decimal newBalance = Balance - WithdrawalAmount;
+            Balance -= WithdrawalAmount;
             if (WithdrawalAmount <= 0)
             {
                 Console.WriteLine("Withdrawal amount must be positive.");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
-            else if (WithdrawalAmount > 0 && newBalance < 0)
+            else if (WithdrawalAmount > 0 && Balance < 0)
             {
-                
+                Console.WriteLine("You've overdrafted your account. An interest of {0} will be added to your new outstanding balance", InterestRate);
+                Balance += (Balance * InterestRate);
+                var completeDeposit = new Transaction(Balance, WithdrawalString, WithdrawalAmount, DateOfTransaction);
+                transactions.Add(completeDeposit);
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
             else
             {
                 Balance -= WithdrawalAmount;
+                Console.WriteLine("Withdrawal of {0} was successful.", WithdrawalAmount);
+                var completeDeposit = new Transaction(Balance, WithdrawalString, WithdrawalAmount, DateOfTransaction);
+                transactions.Add(completeDeposit);
             }
-            var completeDeposit = new Transaction(Balance, WithdrawalString, DepositAmount, DateOfTransaction);
-            transactions.Add(completeDeposit);
+           
         }
     }
 }

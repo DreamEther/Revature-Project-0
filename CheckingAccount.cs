@@ -13,12 +13,10 @@ namespace BankingApplication
         {
             AccountType = "Checking Account";
             AccountID = checkingAccountID;
-            InterestRate = 5;
+            InterestRate = (decimal)0.05;
             Balance = 0;
             checkingAccountID++;
         }
-        
-
         public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
             string withdrawalString= withdrawal.ToString();
@@ -41,9 +39,10 @@ namespace BankingApplication
             else
             {
                 Balance -= WithdrawalAmount;
+                var completeDeposit = new Transaction(Balance, WithdrawalString, DepositAmount, DateOfTransaction);
+                transactions.Add(completeDeposit);
             }
-            var completeDeposit = new Transaction(Balance, WithdrawalString, DepositAmount, DateOfTransaction);
-            transactions.Add(completeDeposit);
+            
         }
 
     }

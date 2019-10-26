@@ -116,6 +116,52 @@ namespace BankingApplication
                 Program.ExecuteUserInput();
             }
         }
+
+        public static void CreateCDAccount()
+        {
+            Console.Clear();
+            Console.WriteLine("You must sign in with your full name and pin before creating an account.");
+            Console.WriteLine("Please enter your first name: ");
+            string firstName = Console.ReadLine();
+            UI.StringOnlyCheck(firstName);
+            Console.WriteLine("Please enter your last name:");
+            string lastName = Console.ReadLine();
+            UI.StringOnlyCheck(lastName);
+            Console.WriteLine("Please enter your unique pin number");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            if (CustomerManager.customers.Count == 0)
+            {
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+            bool isFound = false;
+            Customer customer = null;
+            foreach (var cust in CustomerManager.customers)
+            {
+                if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
+                {
+                    customer = cust;
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound == true)
+            {
+                var cdAccount = new CD();
+                var generateAccount = new AccountManager(cdAccount, customer);
+                Console.WriteLine("You've successfully opened up a Certificate Deposit account with us!");
+                OnEnterPress();
+                Console.Clear();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+        }
         public static void ListTransactions()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -166,12 +212,7 @@ namespace BankingApplication
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
             Console.Write("Please enter the amount you would like to withdraw from Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
-            decimal output;
-            while (!Decimal.TryParse(stringOutput, out output)) // need this condition to continuosly execute if user enters more than 4 numbers
-            {
-                Console.WriteLine("Incorrect Format: Please enter the amount you would like to withdraw: $");
-                stringOutput = Console.ReadLine();
-            }
+            decimal output = TryWithdraw(stringOutput);   
             acc.MakeWithdrawal(output, DateTime.Now);
             Program.ExecuteUserInput();
         }
@@ -248,6 +289,31 @@ namespace BankingApplication
             acc.MakeDeposit(output, DateTime.Now);
             Program.ExecuteUserInput();
         }
+
+        public static void MakeTransfer()
+        {
+            Console.WriteLine("Please enter your unique user Pin:");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            AccountManager accountManager = new AccountManager();
+            accountManager.ListOfAccountsByCustomerPin(pinNumber);
+            Customer customer = accountManager.GetCustomer(pinNumber);
+            Console.Write("Please type in the account ID from which you'd like to transfer from:");
+            string transferFrom = Console.ReadLine();
+            int transferFromAns = CheckAccountNumber(transferFrom);
+            Account account1 = customer.listOfAccounts.First(a => a.AccountID == transferFromAns);
+            Console.WriteLine("Please enter the amount you would like to transfer");
+            string withdrawString = Console.ReadLine();
+            decimal withdrawalAmount = TryWithdraw(withdrawString);
+            Console.WriteLine("Please enter the account ID you would like to transfer this amount to:");
+            string tranferTo = Console.ReadLine();
+            int transferToAns = CheckAccountNumber(tranferTo);
+            Account account2 = customer.listOfAccounts.First(a => a.AccountID == transferToAns);
+            accountManager.Transfer(account1, account2, withdrawalAmount);
+            Console.WriteLine("Transfer succeeded!");
+            Program.ExecuteUserInput();
+
+        }
         public static void WaitForKey(ConsoleKey key)
         {
             while (Console.ReadKey(true).Key != key)
@@ -282,6 +348,16 @@ namespace BankingApplication
             return pinNumber;
         }
 
+        public static decimal TryWithdraw(string amount)
+        {
+            decimal output;
+            while (!Decimal.TryParse(amount, out output)) // need this condition to continuosly execute if user enters more than 4 numbers
+            {
+                Console.WriteLine("Incorrect Format: Please enter the amount you would like to withdraw: $");
+                amount = Console.ReadLine();
+            }
+            return output;
+        }
         public static int CheckAccountNumber(string accountNum)
         {
             int _accountNum;
