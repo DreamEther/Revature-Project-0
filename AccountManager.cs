@@ -13,6 +13,11 @@ namespace BankingApplication
         private Loan _loan;
         private Customer _customer;
         private decimal _amount;
+
+        public AccountManager()
+        {
+        }
+
         public AccountManager(Account account, Customer customer)
         {
             _account = account; // set correct account type
@@ -21,20 +26,10 @@ namespace BankingApplication
             _customer.listOfAccounts.Add(_account); //add account to the specific customers instance listOfAccounts
         }
 
-        public AccountManager(Loan loan, Customer customer)
-        {
-            _loan = loan;
-            _loan.CustomerID = customer.ID;
-            customer.listOfLoans.Add(_loan);
-        }
-        public AccountManager()
-        {
-        }
-
         public void ListOfAccountsByCustomerPin(int pin)
         {
             Customer customer = null;
-            foreach (var cust in AccountManager.customers)
+            foreach (var cust in customers)
             {
                 if (pin == cust.Pin)
                 {
@@ -43,7 +38,7 @@ namespace BankingApplication
                 }
             }
             Console.Clear();
-            foreach(var account in customer.listOfAccounts)
+            foreach (var account in customer.listOfAccounts)
             {
                 if (customer.listOfAccounts == null)
                 {
@@ -56,7 +51,34 @@ namespace BankingApplication
                     Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}",
                     account.AccountID, account.AccountType, account.Balance);
                 }
-             
+
+            }
+        }
+
+        public void ListOfLoansByCustomerPin(int pin)
+        {
+            Customer customer = null;
+            foreach (var cust in customers)
+            {
+                if (pin == cust.Pin)
+                {
+                    customer = cust;
+                    break;
+                }
+            }
+            Console.Clear();
+            //string acc = customer.listOfAccounts.Where(a => a.Contains("Loan"));
+            foreach (var account in customer.listOfAccounts)
+            {
+                if (account.AccountType == "Loan")
+                {
+                    Console.WriteLine("Account ID: {0}     Type: {1}     Account Balance: ${2}",
+                    account.AccountID, account.AccountType, account.Balance);
+                }
+                else
+                {
+                    return;
+                }
             }
         }
 
@@ -87,7 +109,7 @@ namespace BankingApplication
         {
             _customer = customer;
             _account = account;
-            if(_account.Balance > 0)
+            if (_account.Balance > 0)
             {
                 Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
             }
@@ -113,16 +135,18 @@ namespace BankingApplication
             {
                 account1.MakeWithdrawal(_amount, DateTime.Now);
             }
+            else if (account1.AccountType == "Loan")
+            {
+                Console.WriteLine("Cannot make a transfer from accounts of type loan!");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
             else
             {
                 account1.MakeWithdrawal(_amount, DateTime.Now);
                 account2.MakeDeposit(withdrawalAmount, DateTime.Now);
                 Console.WriteLine("Transfer succeeded!");
             }
-          
-        }
-        public void ListOfTransactionsPerAccount(Customer customer)
-        {
 
         }
     }

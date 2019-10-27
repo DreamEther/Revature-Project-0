@@ -8,7 +8,6 @@ namespace BankingApplication
 {
     public class UI
     {
-        private int userPin;
         public static void DisplayAccountsByCustomer()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -24,7 +23,7 @@ namespace BankingApplication
         {
             return input.First().ToString().ToUpper() + String.Join("", input.Skip(1));
         }
-        
+
         public static void CreateCheckingAccount()
         {
             Console.Clear();
@@ -175,7 +174,7 @@ namespace BankingApplication
             int answerNum = CheckAccountNumber(answer);
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
             Console.WriteLine($"{acc.AccountType}, Account ID:{acc.AccountID} Current Balance: ${acc.Balance}");
-           // accountManager.DisplayListOfTransactions(acc);
+            // accountManager.DisplayListOfTransactions(acc);
             var listOfTransactionsInDes = acc.transactions.OrderByDescending(x => x.DateTime).ToList();
             foreach (var transaction in listOfTransactionsInDes)
             {
@@ -198,6 +197,7 @@ namespace BankingApplication
             accountManager.CloseAccount(acc, customer);
             Program.ExecuteUserInput();
         }
+
         public static void Withdraw()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -208,11 +208,11 @@ namespace BankingApplication
             Customer customer = accountManager.GetCustomer(pinNumber);
             Console.WriteLine("Please type in the account ID for which you'd like to make a withdrawal");
             var answer = Console.ReadLine();
-            int answerNum = CheckAccountNumber(answer);         
+            int answerNum = CheckAccountNumber(answer);
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
             Console.Write("Please enter the amount you would like to withdraw from Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
-            decimal output = TryWithdraw(stringOutput);   
+            decimal output = TryWithdraw(stringOutput);
             acc.MakeWithdrawal(output, DateTime.Now);
             Program.ExecuteUserInput();
         }
@@ -234,29 +234,23 @@ namespace BankingApplication
             Console.WriteLine("Is the following information correct? " +
                 "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", firstNameFixed, lastNameFixed, customer.Pin);
             string answer = Console.ReadLine();
-            Console.Clear();
-            AddCustomerToList(customer, answer);
-
-        }
-        public static void AddCustomerToList(Customer customer, string answer)
-        {
-            if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
-            {
-                AccountManager.customers.Add(customer);
-                Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
-                OnEnterPress();
-                Console.Clear();
-                Program.ExecuteUserInput();
-            }
-            else if (answer.Equals("No", StringComparison.InvariantCultureIgnoreCase))
-            {
-                Console.WriteLine("Please re-enter your registration details");
-                RegistrationProcess();
-            }
             while (!answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase) || (!answer.Equals("No", StringComparison.InvariantCultureIgnoreCase)))
             {
                 Console.WriteLine("Please write 'Yes' or 'No'.");
-                break;
+                answer = Console.ReadLine();
+                if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    AccountManager.customers.Add(customer);
+                    Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
+                    OnEnterPress();
+                    Program.ExecuteUserInput();
+                }
+                else if (answer.Equals("No", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    Console.WriteLine("Please re-enter your registration details");
+                    RegistrationProcess();
+                }
+
             }
 
         }
@@ -290,6 +284,71 @@ namespace BankingApplication
             Program.ExecuteUserInput();
         }
 
+        public static void TakeOutLoan()
+        {
+            Console.Clear();
+            Console.WriteLine("You must sign in with your full name and pin before you can take out a loan");
+            Console.WriteLine("Please enter your first name: ");
+            string firstName = Console.ReadLine();
+            UI.StringOnlyCheck(firstName);
+            Console.WriteLine("Please enter your last name:");
+            string lastName = Console.ReadLine();
+            UI.StringOnlyCheck(lastName);
+            Console.WriteLine("Please enter your unique pin number");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            if (AccountManager.customers.Count == 0)
+            {
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+            bool isFound = false;
+            Customer customer = null;
+            foreach (var cust in AccountManager.customers)
+            {
+                if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
+                {
+                    customer = cust;
+                    isFound = true;
+                    break;
+                }
+            }
+            if (isFound == true)
+            {
+                Console.WriteLine("Please enter the amount you would like to request as a loan. Note: amount must be $1000 or greater.");
+                Console.Write("$");
+                string ans = Console.ReadLine();
+                decimal output;
+                while (!Decimal.TryParse(ans, out output)) // need this condition to continuosly execute if user enters more than 4 numbers
+                {
+                    Console.WriteLine("Please enter the amount you would like to request as a loan. Note: amount must be $1000 or greater.");
+                    Console.Write("$");
+                    ans = Console.ReadLine();
+                }
+                var loan = new Loan();
+                var takeOutLoan = new AccountManager(loan, customer);
+                loan.MakeWithdrawal(output, DateTime.Now);
+                OnEnterPress();
+                Console.Clear();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
+            }
+        }
+
+        public static void MakeAPayment()
+        {
+            Console.WriteLine("Please enter your unique user Pin:");
+            string pin = Console.ReadLine();
+            int pinNumber = UI.CheckPin(pin);
+            AccountManager accountManager = new AccountManager();
+            // accountManager.ListOfAccountsByCustomerPin(pinNumber);
+            accountManager.ListOfLoansByCustomerPin(pinNumber);
+        }
         public static void MakeTransfer()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -342,7 +401,7 @@ namespace BankingApplication
             {
                 Console.WriteLine("Incorrect Format: Please enter a unique user Pin that is 4 numbers long:");
                 pin = Console.ReadLine();
-           
+
             }
             return pinNumber;
         }

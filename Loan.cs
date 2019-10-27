@@ -4,40 +4,32 @@ using System.Text;
 
 namespace BankingApplication
 {
-    public class Loan
+    public class Loan : Account
     {
         private static int loanAccountID = 4000;
-        public double LoanAmount { get; set; }
-        public decimal InterestRate { get; set; }
-
-        public decimal Balance { get; set; }
-        public int AccountID { get; set; }
-        public string AccountType { get; set; }
-        public int CustomerID { get; set; }
-        public string LoanString{ get; set; }
-
-        public DateTime DateOfTransaction { get; set; }
+        public decimal LoanAmount { get; set; }
+        public string LoanString { get; set; }
 
         public Loan()
         {
-            AccountType = "Checking Account";
+            AccountType = "Loan";
             AccountID = loanAccountID;
             InterestRate = (decimal)0.05;
             Balance = 0;
             loanAccountID++;
         }
 
-        public void TakeOutLoan(double loanAmount, DateTime timeOfLoan)
+        public override void MakeWithdrawal(decimal loanAmount, DateTime timeOfLoan)
         {
-            DateOfTransaction = timeOfLoan;
-            string loanString = loanAmount.ToString();
-            LoanString = "-$" + loanString;
-            LoanAmount = loanAmount;
-            double doubleBalance = (double)Balance;
-            double newBalance = doubleBalance - loanAmount;
-            if (loanAmount <= 0)
+            if (Balance < 0)
             {
-                Console.WriteLine("Withdrawal amount must be positive.");
+                Console.WriteLine("Cannot make withdrawals on a loan. Please take out another loan or make a payment on an existing loan");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else if (loanAmount <= 0)
+            {
+                Console.WriteLine("Loans must be $1000 or greater...");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
@@ -47,6 +39,56 @@ namespace BankingApplication
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
+            else
+            {
+                DateOfTransaction = timeOfLoan;
+                string loanString = loanAmount.ToString();
+                LoanString = "-$" + loanString;
+                LoanAmount = loanAmount;
+                Balance -= loanAmount;
+                var completeLoan = new Transaction(Balance, LoanString, LoanAmount, DateOfTransaction);
+                transactions.Add(completeLoan);
+                Console.WriteLine("You've successfully taken out a loan!");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+
+            }
+        }
+
+        public void MakePayment(decimal payment, DateTime dateTime)
+        {
+
+            if (payment <= 0)
+            {
+                Console.WriteLine("Payment amount must be greater than zero");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else if (payment > Balance)
+            {
+                Console.WriteLine("The intended payment is more than your outstanding loan. Please enter an amount less than or equal to your outstanding loan");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else
+            {
+                string depositString = payment.ToString();
+                DepositString = "+$" + depositString;
+                DateOfTransaction = dateTime.AddYears(-1);
+                DepositAmount = payment;
+                Balance += payment;
+                var makePayment = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
+                transactions.Add(makePayment);
+                Console.WriteLine("Payment recieved!");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+        }
+        public override void MakeDeposit(decimal payment, DateTime dateTime)
+        {
+            Console.WriteLine("Please select the 'Make a Payment' option to make a payment on your loan");
+            UI.OnEnterPress();
+            Program.ExecuteUserInput();
         }
     }
 }
