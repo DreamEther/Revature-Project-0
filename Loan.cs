@@ -45,10 +45,11 @@ namespace BankingApplication
                 string loanString = loanAmount.ToString();
                 LoanString = "-$" + loanString;
                 LoanAmount = loanAmount;
-                Balance -= loanAmount;
+                Balance -= (LoanAmount * InterestRate);
                 var completeLoan = new Transaction(Balance, LoanString, LoanAmount, DateOfTransaction);
                 transactions.Add(completeLoan);
                 Console.WriteLine("You've successfully taken out a loan!");
+                Console.WriteLine("Interest rate of {0} will be added to your loan", this.InterestRate);
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
 
@@ -77,6 +78,8 @@ namespace BankingApplication
                 DateOfTransaction = dateTime.AddYears(-1);
                 DepositAmount = payment;
                 Balance += payment;
+                decimal roundedBalance = Decimal.Round(Balance, 2);
+                Balance = roundedBalance;
                 var makePayment = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
                 transactions.Add(makePayment);
                 Console.WriteLine("Payment recieved!");

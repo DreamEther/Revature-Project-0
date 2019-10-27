@@ -19,7 +19,7 @@ namespace BankingApplication
             DisplayAccounts,
             DisplayTransactions,
             TakeLoan,
-            MakePayment,
+            MakePayment = 11,
             CloseAccount
         };
 
@@ -29,7 +29,7 @@ namespace BankingApplication
         }
         public static void ExecuteUserInput()
         {
-
+            //Console.Clear();
             Console.WriteLine("Please select one of the following options: \n " +
                "1: Register as a customer\n 2: Create Checking Account\n 3: Create Business Account\n 4: Create a Certificate of Deposit\n " +
                "5: Make a deposit\n" + " 6: Make a withdrawal\n 7: Make a transfer\n 8: Display a list of your accounts\n 9: Display a list of your transactions\n" +
@@ -104,6 +104,11 @@ namespace BankingApplication
                 case UserAction.CloseAccount:
                     {
                         UI.CloseAccount();
+                        break;
+                    }
+                default:
+                    {
+                        ExecuteUserInput();
                         break;
                     }
             }

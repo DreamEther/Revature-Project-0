@@ -26,9 +26,12 @@ namespace BankingApplication
         {
                 string depositString = deposit.ToString();
                 DepositString = "+$" + depositString;
+                String.Format("{0:0.00}", DepositString);
                 DepositAmount = deposit;
                 DateOfTransaction = dateTime;
                 Balance += DepositAmount;
+                decimal roundedBalance = Decimal.Round(Balance, 2);
+                Balance = roundedBalance;
                 var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
                 transactions.Add(completeDeposit);
         }

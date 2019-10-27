@@ -15,6 +15,10 @@ namespace BankingApplication
         public string LastName { get; set; }
         public int Pin { get; set;}
 
+        public Customer()
+        {
+
+        }
         public Customer(string firstName, string lastName, int pin)
         {
             FirstName = firstName;

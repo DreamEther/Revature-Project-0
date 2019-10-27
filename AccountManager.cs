@@ -67,7 +67,7 @@ namespace BankingApplication
                 }
             }
             Console.Clear();
-            //string acc = customer.listOfAccounts.Where(a => a.Contains("Loan"));
+            //Account acc = customer.listOfAccounts.Where(a => a.AccountType == "Loan").ToList<Account>();
             foreach (var account in customer.listOfAccounts)
             {
                 if (account.AccountType == "Loan")
@@ -112,9 +112,16 @@ namespace BankingApplication
             if (_account.Balance > 0)
             {
                 Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
+                Console.Clear();
+                Program.ExecuteUserInput();
             }
-            _customer.listOfAccounts.Remove(_account);
-            Console.WriteLine($"Account {_account.AccountID} has been closed.");
+            else
+            {
+                _customer.listOfAccounts.Remove(_account);
+                Console.WriteLine($"Account {_account.AccountID} has been closed.");
+                Console.Clear();
+                Program.ExecuteUserInput();
+            }          
         }
 
         public void CloseAccount(Account account)

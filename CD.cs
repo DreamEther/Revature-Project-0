@@ -46,6 +46,8 @@ namespace BankingApplication
                 DepositAmount = deposit;
                 Balance += deposit;
                 Balance += (Balance * InterestRate) * 12;
+                decimal roundedBalance = Decimal.Round(Balance, 2);
+                Balance = roundedBalance;
                 var completeDeposit = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);
                 transactions.Add(completeDeposit);
                 Console.WriteLine("At the end of 12 months, your balance after interest will be {0}", Balance);
@@ -74,7 +76,7 @@ namespace BankingApplication
                 Balance -= withdrawal;
                 var completeWithdrawal = new Transaction(Balance, WithdrawalString, WithdrawalAmount, dateTime);
                 transactions.Add(completeWithdrawal);
-                Console.WriteLine("You have successfully withdrawn your completed Certificate Deposit! Thank you for choosing GenericBank!");
+                UI.CloseCDOnWithdrawal();
                 Console.WriteLine("This account will now be closed.");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
