@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BankingApplication
@@ -11,7 +12,7 @@ namespace BankingApplication
         public DateTime Maturity { get; set; }
         public CD()
         {
-            AccountType = "Certificate Deposit Account";
+            AccountType = "Certificate Deposit";
             AccountID = businessAccountID;
             InterestRate = (decimal)0.05;
             Balance = 0;
@@ -56,11 +57,12 @@ namespace BankingApplication
 
         public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
         {
+            AccountManager accountManager = new AccountManager();
             if (dateTime < DateOfTransaction.AddYears(1))
             {
                 Console.WriteLine("Cannot make a withdrawal until end of term");
             }
-            else if(withdrawal != DepositAmount)
+            else if(withdrawal != Balance)
             {
                 Console.WriteLine("Must withdraw full amount from your Certificate Deposit");
             }
@@ -73,6 +75,7 @@ namespace BankingApplication
                 var completeWithdrawal = new Transaction(Balance, WithdrawalString, WithdrawalAmount, dateTime);
                 transactions.Add(completeWithdrawal);
                 Console.WriteLine("You have successfully withdrawn your completed Certificate Deposit! Thank you for choosing GenericBank!");
+                Console.WriteLine("This account will now be closed.");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }

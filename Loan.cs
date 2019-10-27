@@ -27,35 +27,26 @@ namespace BankingApplication
             loanAccountID++;
         }
 
-        //include maybe 3 loan options of various amounts
-        //public override void MakeWithdrawal(decimal withdrawal, DateTime dateTime)
-        //{
-        //    string withdrawalString = withdrawal.ToString();
-        //    WithdrawalString = "-$" + withdrawalString;
-        //    WithdrawalAmount = withdrawal;
-        //    DateOfTransaction = dateTime;
-        //    decimal newBalance = Balance - WithdrawalAmount;
-        //    if (WithdrawalAmount <= 0)
-        //    {
-        //        Console.WriteLine("Withdrawal amount must be positive.");
-        //        UI.OnEnterPress();
-        //        Program.ExecuteUserInput();
-        //    }
-        //}
-
         public void TakeOutLoan(double loanAmount, DateTime timeOfLoan)
         {
+            DateOfTransaction = timeOfLoan;
             string loanString = loanAmount.ToString();
             LoanString = "-$" + loanString;
             LoanAmount = loanAmount;
-            //DateOfTransaction = dateTime;
-            //decimal newBalance = Balance - WithdrawalAmount;
-            //if (WithdrawalAmount <= 0)
-            //{
-            //    Console.WriteLine("Withdrawal amount must be positive.");
-            //    UI.OnEnterPress();
-            //    Program.ExecuteUserInput();
-            //}
+            double doubleBalance = (double)Balance;
+            double newBalance = doubleBalance - loanAmount;
+            if (loanAmount <= 0)
+            {
+                Console.WriteLine("Withdrawal amount must be positive.");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
+            else if (loanAmount > 0 && loanAmount < 1000)
+            {
+                Console.WriteLine("Loans must be $1000 or greater...");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
         }
     }
 }

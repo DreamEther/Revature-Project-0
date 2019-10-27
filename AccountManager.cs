@@ -7,6 +7,8 @@ namespace BankingApplication
 {
     public class AccountManager
     {
+        public static List<Customer> customers = new List<Customer>();
+
         private Account _account;
         private Loan _loan;
         private Customer _customer;
@@ -14,8 +16,9 @@ namespace BankingApplication
         public AccountManager(Account account, Customer customer)
         {
             _account = account; // set correct account type
+            _customer = customer;
             _account.CustomerID = customer.ID;
-            customer.listOfAccounts.Add(_account); //add account to the specific customers instance listOfAccounts
+            _customer.listOfAccounts.Add(_account); //add account to the specific customers instance listOfAccounts
         }
 
         public AccountManager(Loan loan, Customer customer)
@@ -31,7 +34,7 @@ namespace BankingApplication
         public void ListOfAccountsByCustomerPin(int pin)
         {
             Customer customer = null;
-            foreach (var cust in CustomerManager.customers)
+            foreach (var cust in AccountManager.customers)
             {
                 if (pin == cust.Pin)
                 {
@@ -69,7 +72,7 @@ namespace BankingApplication
         public Customer GetCustomer(int pin)
         {
             Customer customer = null;
-            foreach (var cust in CustomerManager.customers)
+            foreach (var cust in AccountManager.customers)
             {
                 if (pin == cust.Pin)
                 {
@@ -91,11 +94,32 @@ namespace BankingApplication
             _customer.listOfAccounts.Remove(_account);
             Console.WriteLine($"Account {_account.AccountID} has been closed.");
         }
+
+        public void CloseAccount(Account account)
+        {
+            Customer cust = null;
+            _account = account;
+            if (_account.Balance > 0)
+            {
+                Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
+            }
+            cust.listOfAccounts.Remove(_account);
+            Console.WriteLine($"Account {_account.AccountID} has been closed.");
+        }
         public void Transfer(Account account1, Account account2, decimal withdrawalAmount)
         {
             _amount = withdrawalAmount;
-            account1.MakeWithdrawal(_amount, DateTime.Now);
-            account2.MakeDeposit(withdrawalAmount, DateTime.Now);
+            if (account1.AccountType == "Certificate Deposit" && account1.WithdrawalAmount != account1.Balance)
+            {
+                account1.MakeWithdrawal(_amount, DateTime.Now);
+            }
+            else
+            {
+                account1.MakeWithdrawal(_amount, DateTime.Now);
+                account2.MakeDeposit(withdrawalAmount, DateTime.Now);
+                Console.WriteLine("Transfer succeeded!");
+            }
+          
         }
         public void ListOfTransactionsPerAccount(Customer customer)
         {

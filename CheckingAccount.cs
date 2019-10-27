@@ -6,6 +6,7 @@ namespace BankingApplication
 {
     public class CheckingAccount : Account
     {
+        
         private static int checkingAccountID = 1000;
         //public Customer CustomerID { get; set; }
 

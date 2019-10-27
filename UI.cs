@@ -38,14 +38,14 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
-            if (CustomerManager.customers.Count == 0)
+            if (AccountManager.customers.Count == 0)
             {
                 Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
                 Program.ExecuteUserInput();
             }
             bool isFound = false;
             Customer customer = null;
-            foreach (var cust in CustomerManager.customers)
+            foreach (var cust in AccountManager.customers)
             {
                 if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
                 {
@@ -84,14 +84,14 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
-            if (CustomerManager.customers.Count == 0)
+            if (AccountManager.customers.Count == 0)
             {
                 Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
                 Program.ExecuteUserInput();
             }
             bool isFound = false;
             Customer customer = null;
-            foreach (var cust in CustomerManager.customers)
+            foreach (var cust in AccountManager.customers)
             {
                 if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
                 {
@@ -130,14 +130,14 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
-            if (CustomerManager.customers.Count == 0)
+            if (AccountManager.customers.Count == 0)
             {
                 Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
                 Program.ExecuteUserInput();
             }
             bool isFound = false;
             Customer customer = null;
-            foreach (var cust in CustomerManager.customers)
+            foreach (var cust in AccountManager.customers)
             {
                 if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
                 {
@@ -242,7 +242,7 @@ namespace BankingApplication
         {
             if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
             {
-                CustomerManager.customers.Add(customer);
+                AccountManager.customers.Add(customer);
                 Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
                 OnEnterPress();
                 Console.Clear();
@@ -310,7 +310,6 @@ namespace BankingApplication
             int transferToAns = CheckAccountNumber(tranferTo);
             Account account2 = customer.listOfAccounts.First(a => a.AccountID == transferToAns);
             accountManager.Transfer(account1, account2, withdrawalAmount);
-            Console.WriteLine("Transfer succeeded!");
             Program.ExecuteUserInput();
 
         }
