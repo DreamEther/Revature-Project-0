@@ -8,6 +8,7 @@ namespace BankingApplication
 {
     public class UI
     {
+        private Loan _loan;
         public static void DisplayAccountsByCustomer()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -219,7 +220,13 @@ namespace BankingApplication
             Console.WriteLine("Please type in the account ID for which you'd like to make a withdrawal");
             var answer = Console.ReadLine();
             int answerNum = CheckAccountNumber(answer);
-            Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
+            Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == answerNum);
+            if (acc == null)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid account number!");
+                Program.ExecuteUserInput();
+            }
             Console.Write("Please enter the amount you would like to withdraw from Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
             decimal output = TryWithdraw(stringOutput);
@@ -245,36 +252,22 @@ namespace BankingApplication
             Console.Clear();
             string firstNameFixed = FirstCharToUpper(customer.FirstName);
             string lastNameFixed = FirstCharToUpper(customer.LastName);
+            
             Console.WriteLine("Is the following information correct? " +
                 "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", firstNameFixed, lastNameFixed, customer.Pin);
             string answer = Console.ReadLine();
-            while ((!answer.Equals("yes", StringComparison.InvariantCultureIgnoreCase)) || (!answer.Equals("no", StringComparison.InvariantCultureIgnoreCase)))
-            {
-                Console.WriteLine("Please write 'Yes' or 'No'.");
-                answer = Console.ReadLine();
-
-
-                if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
-                {
-
-                    if (AccountManager.customers.Count == 0)
-                    {
-                        AccountManager.customers.Add(customer);
-                    }
-
-                    CheckPin(customer);
-                    Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
-                    OnEnterPress();
-                    Program.ExecuteUserInput();
-                }
-                else if (answer.Equals("No", StringComparison.InvariantCultureIgnoreCase))
+            AddCustomerToList(answer, customer);
+            if (answer.Equals("No", StringComparison.InvariantCultureIgnoreCase))
                 {
                     Console.WriteLine("Please re-enter your registration details");
                     RegistrationProcess();
                 }
-            }
-            
-           
+            while ((!answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) || (!answer.Equals("No", StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    Console.WriteLine("Please enter 'Yes' or 'No");
+                    answer = Console.ReadLine();
+                    AddCustomerToList(answer, customer);
+                }                           
         }
 
         public static void Deposit()
@@ -287,13 +280,14 @@ namespace BankingApplication
             Customer customer = accountManager.GetCustomer(pinNumber);
             Console.WriteLine("Please type in the account ID for which you'd like to make a deposit");
             var answer = Console.ReadLine();
-            int answerNum;
-            while (answer.Length != 4 || !Int32.TryParse(answer, out answerNum)) // need this condition to continuosly execute if user enters more than 4 numbers
+            int accountNum = CheckAccountNumber(answer);            
+            Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == accountNum); 
+            if (acc == null)
             {
-                Console.WriteLine("Incorrect Format: Please enter a number that is no longer than 4 numbers");
-                answer = Console.ReadLine();
+                    Console.Clear();
+                    Console.WriteLine("Invalid account number!");
+                    Program.ExecuteUserInput();                  
             }
-            Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
             Console.Write("Please enter the amount you would like to deposit into Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
             decimal output;
@@ -347,9 +341,9 @@ namespace BankingApplication
                     Console.Write("$");
                     ans = Console.ReadLine();
                 }
-                var loan = new Loan();
-                loan.MakeWithdrawal(output, DateTime.Now);
+                var loan = new Loan(0);
                 var takeOutLoan = new AccountManager(loan, customer);
+                loan.MakeWithdrawal(output, DateTime.Now);
                 OnEnterPress();
                 Console.Clear();
                 Program.ExecuteUserInput();
@@ -364,12 +358,34 @@ namespace BankingApplication
 
         public static void MakeAPayment()
         {
+            Loan loan = new Loan();
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = CheckPin(pin);
+
             AccountManager accountManager = new AccountManager();
-            // accountManager.ListOfAccountsByCustomerPin(pinNumber);
+            Customer customer = accountManager.GetCustomer(pinNumber);
             accountManager.ListOfLoansByCustomerPin(pinNumber);
+            Console.WriteLine("Please type in the account ID for which you'd like to make a payment");
+            var answer = Console.ReadLine();
+            int accountNum = CheckAccountNumber(answer);
+            Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == accountNum);
+            if (acc == null)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid account number!");
+                Program.ExecuteUserInput();
+            }
+            Console.Write("Please enter you payment amount for AccountID: {0} \n$", acc.AccountID);
+            var stringOutput = Console.ReadLine();
+            decimal output;
+            while (!Decimal.TryParse(stringOutput, out output))
+            {
+                Console.WriteLine("Incorrect Format: Please enter the amount you would like to pay: $");
+                stringOutput = Console.ReadLine();
+            }
+            loan.MakePayment(output, DateTime.Now);
+
         }
         public static void MakeTransfer()
         {
@@ -470,6 +486,28 @@ namespace BankingApplication
                 accountNum = Console.ReadLine();
             }
             return _accountNum;
+        }
+
+        public static void AddCustomerToList(string answer, Customer customer)
+        {
+            if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
+            {
+                if (AccountManager.customers.Count == 0)
+                {
+                    AccountManager.customers.Add(customer);
+                    Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
+                    OnEnterPress();
+                    Program.ExecuteUserInput();
+                }
+                else
+                {
+                    CheckPin(customer);
+                    Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
+                    OnEnterPress();
+                    Program.ExecuteUserInput();
+                }
+
+            }
         }
     }
 }

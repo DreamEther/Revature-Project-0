@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Threading;
 
 namespace BankingApplication
 {
@@ -29,6 +30,13 @@ namespace BankingApplication
         public void ListOfAccountsByCustomerPin(int pin)
         {
             Customer customer = null;
+            if (customers.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("You must first register as a customer and open an account with us!");
+                Thread.Sleep(3000);
+                Program.ExecuteUserInput();
+            }
             foreach (var cust in customers)
             {
                 if (pin == cust.Pin)
@@ -58,16 +66,31 @@ namespace BankingApplication
         public void ListOfLoansByCustomerPin(int pin)
         {
             Customer customer = null;
+            if (customers.Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("You must first register as a customer and open an account with us!");
+                Thread.Sleep(2000);
+                Program.ExecuteUserInput();
+            }
             foreach (var cust in customers)
             {
                 if (pin == cust.Pin)
                 {
                     customer = cust;
+                    if (customer.listOfAccounts.Count == 0)
+                    {
+                        Console.Clear();
+                        Console.WriteLine("You have no accounts open at the moment!");
+                        Thread.Sleep(2000);
+                        Program.ExecuteUserInput();
+                    }
                     break;
                 }
             }
             Console.Clear();
-            //Account acc = customer.listOfAccounts.Where(a => a.AccountType == "Loan").ToList<Account>();
+            
+ 
             foreach (var account in customer.listOfAccounts)
             {
                 if (account.AccountType == "Loan")
@@ -77,7 +100,10 @@ namespace BankingApplication
                 }
                 else
                 {
-                    return;
+                    Console.Clear();
+                    Console.WriteLine("You do not have any loans to make a payment on...");
+                    Thread.Sleep(2000);
+                    Program.ExecuteUserInput();
                 }
             }
         }

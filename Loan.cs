@@ -6,22 +6,27 @@ namespace BankingApplication
 {
     public class Loan : Account
     {
+        private int interest = 5;
         private static int loanAccountID = 4000;
         public decimal LoanAmount { get; set; }
         public string LoanString { get; set; }
 
         public Loan()
         {
+
+        }
+        public Loan(int balance)
+        {
             AccountType = "Loan";
             AccountID = loanAccountID;
             InterestRate = (decimal)0.05;
-            Balance = 0;
+            Balance = balance;
             loanAccountID++;
         }
 
         public override void MakeWithdrawal(decimal loanAmount, DateTime timeOfLoan)
         {
-            if (Balance < 0)
+            if (Balance > 0)
             {
                 Console.WriteLine("Cannot make withdrawals on a loan. Please take out another loan or make a payment on an existing loan");
                 UI.OnEnterPress();
@@ -42,14 +47,17 @@ namespace BankingApplication
             else
             {
                 DateOfTransaction = timeOfLoan;
-                string loanString = loanAmount.ToString();
-                LoanString = "-$" + loanString;
                 LoanAmount = loanAmount;
-                Balance -= (LoanAmount * InterestRate);
+                string loanString = LoanAmount.ToString();
+                LoanString = "+$" + loanString;
+                Balance += LoanAmount;
+                Balance += (Balance * InterestRate);
+                decimal roundedBalance = Decimal.Round(Balance, 2);
+                Balance = roundedBalance;
                 var completeLoan = new Transaction(Balance, LoanString, LoanAmount, DateOfTransaction);
                 transactions.Add(completeLoan);
                 Console.WriteLine("You've successfully taken out a loan!");
-                Console.WriteLine("Interest rate of {0} will be added to your loan", this.InterestRate);
+                Console.WriteLine("Interest rate of {0}% will be added to your loan", interest);
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
 
@@ -77,7 +85,7 @@ namespace BankingApplication
                 DepositString = "+$" + depositString;
                 DateOfTransaction = dateTime.AddYears(-1);
                 DepositAmount = payment;
-                Balance += payment;
+                Balance -= payment;
                 decimal roundedBalance = Decimal.Round(Balance, 2);
                 Balance = roundedBalance;
                 var makePayment = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);

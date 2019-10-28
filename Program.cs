@@ -19,7 +19,7 @@ namespace BankingApplication
             DisplayAccounts,
             DisplayTransactions,
             TakeLoan,
-            MakePayment = 11,
+            MakePayment,
             CloseAccount
         };
 
