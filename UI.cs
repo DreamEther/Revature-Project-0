@@ -8,7 +8,6 @@ namespace BankingApplication
 {
     public class UI
     {
-        private Loan _loan;
         public static void DisplayAccountsByCustomer()
         {
             Console.WriteLine("Please enter your unique user Pin:");
@@ -188,13 +187,21 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
+            if (customer.listOfAccounts.Count == 0)
+            {
+                Console.WriteLine("You have no open accounts");
+                OnEnterPress();
+                Program.ExecuteUserInput();
+            }
             Console.WriteLine("Please enter the AccountID for the account you wish to close: ");
             var answer = Console.ReadLine();
             int answerNum = CheckAccountNumber(answer);
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
+            CheckAccountNumber(acc);
             accountManager.CloseAccount(acc, customer);
         }
 
@@ -217,16 +224,12 @@ namespace BankingApplication
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
+            accountManager.CheckForNoAccounts(customer);
             Console.WriteLine("Please type in the account ID for which you'd like to make a withdrawal");
             var answer = Console.ReadLine();
             int answerNum = CheckAccountNumber(answer);
             Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == answerNum);
-            if (acc == null)
-            {
-                Console.Clear();
-                Console.WriteLine("Invalid account number!");
-                Program.ExecuteUserInput();
-            }
+            CheckAccountNumber(acc);
             Console.Write("Please enter the amount you would like to withdraw from Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
             decimal output = TryWithdraw(stringOutput);
@@ -237,22 +240,21 @@ namespace BankingApplication
         {
             Console.WriteLine("Please enter your first name: ");
             string firstName = Console.ReadLine();
-            UI.StringOnlyCheck(firstName);
+            string firstNameSO = UI.StringOnlyCheck(firstName);
             Console.WriteLine("Please enter your last name: ");
             string lastName = Console.ReadLine();
-            UI.StringOnlyCheck(lastName);
+            string lastNameSO = UI.StringOnlyCheck(lastName);
             Console.WriteLine("Enter a unique user PIN(maximum of 4 numbers): ");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
-            Customer customer = new Customer(firstName.ToLower(), lastName.ToLower(), pinNumber);
+            Customer customer = new Customer(firstNameSO.ToLower(), lastNameSO.ToLower(), pinNumber);
             if (AccountManager.customers.Count != 0)
             {
                 AccountManager.customers.Add(customer);
             }
             Console.Clear();
             string firstNameFixed = FirstCharToUpper(customer.FirstName);
-            string lastNameFixed = FirstCharToUpper(customer.LastName);
-            
+            string lastNameFixed = FirstCharToUpper(customer.LastName);          
             Console.WriteLine("Is the following information correct? " +
                 "Please enter 'Yes' or 'No' \n\nFull name: {0} {1}   Pin: {2}", firstNameFixed, lastNameFixed, customer.Pin);
             string answer = Console.ReadLine();
@@ -278,16 +280,12 @@ namespace BankingApplication
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
+            accountManager.CheckForNoAccounts(customer);
             Console.WriteLine("Please type in the account ID for which you'd like to make a deposit");
             var answer = Console.ReadLine();
             int accountNum = CheckAccountNumber(answer);            
-            Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == accountNum); 
-            if (acc == null)
-            {
-                    Console.Clear();
-                    Console.WriteLine("Invalid account number!");
-                    Program.ExecuteUserInput();                  
-            }
+            Account acc = customer.listOfAccounts.FirstOrDefault(a => a.AccountID == accountNum);
+            CheckAccountNumber(acc);
             Console.Write("Please enter the amount you would like to deposit into Account: {0} \n$", acc.AccountID);
             var stringOutput = Console.ReadLine();
             decimal output;
@@ -313,11 +311,7 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
-            if (AccountManager.customers.Count == 0)
-            {
-                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
-                Program.ExecuteUserInput();
-            }
+            CheckForCustomer();
             bool isFound = false;
             Customer customer = null;
             foreach (var cust in AccountManager.customers)
@@ -341,12 +335,15 @@ namespace BankingApplication
                     Console.Write("$");
                     ans = Console.ReadLine();
                 }
+                if (output < 1000)
+                {
+                    Console.WriteLine("Loans must be $1000 or more");
+                    OnEnterPress();
+                    Program.ExecuteUserInput();
+                }
                 var loan = new Loan(0);
                 var takeOutLoan = new AccountManager(loan, customer);
                 loan.MakeWithdrawal(output, DateTime.Now);
-                OnEnterPress();
-                Console.Clear();
-                Program.ExecuteUserInput();
             }
             else
             {
@@ -362,9 +359,9 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = CheckPin(pin);
-
             AccountManager accountManager = new AccountManager();
             Customer customer = accountManager.GetCustomer(pinNumber);
+            accountManager.CheckForNoAccounts(customer);
             accountManager.ListOfLoansByCustomerPin(pinNumber);
             Console.WriteLine("Please type in the account ID for which you'd like to make a payment");
             var answer = Console.ReadLine();
@@ -395,10 +392,12 @@ namespace BankingApplication
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
+            accountManager.CheckForNoAccounts(customer);
             Console.Write("Please type in the account ID from which you'd like to transfer from:");
             string transferFrom = Console.ReadLine();
             int transferFromAns = CheckAccountNumber(transferFrom);
             Account account1 = customer.listOfAccounts.First(a => a.AccountID == transferFromAns);
+            CheckAccountNumber(account1);
             Console.WriteLine("Please enter the amount you would like to transfer");
             string withdrawString = Console.ReadLine();
             decimal withdrawalAmount = TryWithdraw(withdrawString);
@@ -406,6 +405,7 @@ namespace BankingApplication
             string tranferTo = Console.ReadLine();
             int transferToAns = CheckAccountNumber(tranferTo);
             Account account2 = customer.listOfAccounts.First(a => a.AccountID == transferToAns);
+            CheckAccountNumber(account2);
             accountManager.Transfer(account1, account2, withdrawalAmount);
             Program.ExecuteUserInput();
 
@@ -417,13 +417,14 @@ namespace BankingApplication
 
             }
         }
-        public static void StringOnlyCheck(string name)
+        public static string StringOnlyCheck(string name)
         {
             while (!Regex.IsMatch(name, @"^[a-zA-Z]+$"))
             {
                 Console.WriteLine("Incorrect Format: No numbers or special characters allowed in this field");
                 name = Console.ReadLine();
             }
+            return name;
         }
 
         public static void OnEnterPress()
@@ -507,6 +508,25 @@ namespace BankingApplication
                     Program.ExecuteUserInput();
                 }
 
+            }
+        }
+
+        public static void CheckAccountNumber(Account account)
+        {
+            if (account == null)
+            {
+                Console.Clear();
+                Console.WriteLine("Invalid account number!");
+                Program.ExecuteUserInput();
+            }
+        }
+
+        public static void CheckForCustomer()
+        {
+            if (AccountManager.customers.Count == 0)
+            {
+                Console.WriteLine("Sorry, we couldn't find any customers related to the information provided!");
+                Program.ExecuteUserInput();
             }
         }
     }

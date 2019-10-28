@@ -13,7 +13,6 @@ namespace BankingApplication
 
         public Loan()
         {
-
         }
         public Loan(int balance)
         {
@@ -29,18 +28,6 @@ namespace BankingApplication
             if (Balance > 0)
             {
                 Console.WriteLine("Cannot make withdrawals on a loan. Please take out another loan or make a payment on an existing loan");
-                UI.OnEnterPress();
-                Program.ExecuteUserInput();
-            }
-            else if (loanAmount <= 0)
-            {
-                Console.WriteLine("Loans must be $1000 or greater...");
-                UI.OnEnterPress();
-                Program.ExecuteUserInput();
-            }
-            else if (loanAmount > 0 && loanAmount < 1000)
-            {
-                Console.WriteLine("Loans must be $1000 or greater...");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
@@ -60,7 +47,6 @@ namespace BankingApplication
                 Console.WriteLine("Interest rate of {0}% will be added to your loan", interest);
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
-
             }
         }
 
@@ -73,7 +59,7 @@ namespace BankingApplication
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
-            else if (payment > Balance)
+            else if (payment < Balance)
             {
                 Console.WriteLine("The intended payment is more than your outstanding loan. Please enter an amount less than or equal to your outstanding loan");
                 UI.OnEnterPress();
@@ -85,7 +71,7 @@ namespace BankingApplication
                 DepositString = "+$" + depositString;
                 DateOfTransaction = dateTime.AddYears(-1);
                 DepositAmount = payment;
-                Balance -= payment;
+                Balance -= DepositAmount;
                 decimal roundedBalance = Decimal.Round(Balance, 2);
                 Balance = roundedBalance;
                 var makePayment = new Transaction(Balance, DepositString, DepositAmount, DateOfTransaction);

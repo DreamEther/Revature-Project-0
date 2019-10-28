@@ -24,6 +24,12 @@ namespace BankingApplication
 
         public virtual void MakeDeposit(decimal deposit, DateTime dateTime)
         {
+            if (deposit <= 0 )
+            {
+                Console.WriteLine("Deposit must be greater than 0");
+                UI.OnEnterPress();
+                Program.ExecuteUserInput();
+            }
                 string depositString = deposit.ToString();
                 DepositString = "+$" + depositString;
                 String.Format("{0:0.00}", DepositString);
