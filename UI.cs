@@ -187,6 +187,7 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            Console.Clear();
             CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
@@ -221,6 +222,8 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            Console.Clear();
+            CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
@@ -277,6 +280,8 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            Console.Clear();
+            CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
@@ -311,6 +316,7 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            Console.Clear();
             CheckForCustomer();
             bool isFound = false;
             Customer customer = null;
@@ -358,6 +364,8 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = CheckPin(pin);
+            Console.Clear();
+            CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             Customer customer = accountManager.GetCustomer(pinNumber);
             accountManager.CheckForNoAccounts(customer);
@@ -388,6 +396,8 @@ namespace BankingApplication
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
+            Console.Clear();
+            CheckForCustomer();
             AccountManager accountManager = new AccountManager();
             accountManager.ListOfAccountsByCustomerPin(pinNumber);
             Customer customer = accountManager.GetCustomer(pinNumber);
