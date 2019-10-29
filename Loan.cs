@@ -49,17 +49,16 @@ namespace BankingApplication
                 Program.ExecuteUserInput();
             }
         }
-
+    
         public void MakePayment(decimal payment, DateTime dateTime)
         {
-
             if (payment <= 0)
             {
                 Console.WriteLine("Payment amount must be greater than zero");
                 UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
-            else if (payment < Balance)
+            else if (payment > Balance)
             {
                 Console.WriteLine("The intended payment is more than your outstanding loan. Please enter an amount less than or equal to your outstanding loan");
                 UI.OnEnterPress();

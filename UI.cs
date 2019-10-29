@@ -355,7 +355,6 @@ namespace BankingApplication
 
         public static void MakeAPayment()
         {
-            Loan loan = new Loan();
             Console.WriteLine("Please enter your unique user Pin:");
             string pin = Console.ReadLine();
             int pinNumber = CheckPin(pin);
@@ -381,8 +380,8 @@ namespace BankingApplication
                 Console.WriteLine("Incorrect Format: Please enter the amount you would like to pay: $");
                 stringOutput = Console.ReadLine();
             }
-            loan.MakePayment(output, DateTime.Now);
-
+            // need to type cast in order to be able to access MakePayments method...which isn't in the base class
+            (acc as Loan).MakePayment(output, DateTime.Now); 
         }
         public static void MakeTransfer()
         {
@@ -410,6 +409,14 @@ namespace BankingApplication
             Program.ExecuteUserInput();
 
         }
+
+
+      /*
+       * 
+       * -----------------------------------------------Utility Functions----------------------------------------------------------------------
+       * 
+       */
+
         public static void WaitForKey(ConsoleKey key)
         {
             while (Console.ReadKey(true).Key != key)

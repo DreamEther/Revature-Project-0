@@ -6,7 +6,6 @@ namespace BankingApplication
 {
     public class Transaction
     {
-
         public decimal TransactionAmount { get; set; }
         public DateTime DateTime { get; set; }
         public string TransactionAsString { get; set; }
@@ -19,12 +18,5 @@ namespace BankingApplication
             TransactionAmount = transactionAmount;
             DateTime = dateTime;
         }
-
-        //public void DisplayListOfTransactions(Account account)
-        //{
-        //    _account = account;
-        //    Console.WriteLine($"{_account.AccountType} {_account.AccountID} {_account.Balance}");
-
-        //}
     }
 }

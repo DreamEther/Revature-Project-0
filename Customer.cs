@@ -7,7 +7,6 @@ namespace BankingApplication
     public class Customer
     {
         public List<Account> listOfAccounts = new List<Account>();
-        public List<Loan> listOfLoans = new List<Loan>();
         static int numberOfCustomers = 0000;
 
         public int ID { get; set; }
@@ -15,10 +14,6 @@ namespace BankingApplication
         public string LastName { get; set; }
         public int Pin { get; set;}
 
-        public Customer()
-        {
-
-        }
         public Customer(string firstName, string lastName, int pin)
         {
             FirstName = firstName;
