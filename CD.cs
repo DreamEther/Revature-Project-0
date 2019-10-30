@@ -7,16 +7,16 @@ namespace BankingApplication
 {
     class CD : Account
     {
-        private static int businessAccountID = 3000;
+        private static int cdAccountID = 3000;
 
         public DateTime Maturity { get; set; }
         public CD()
         {
             AccountType = "Certificate Deposit";
-            AccountID = businessAccountID;
+            AccountID = cdAccountID;
             InterestRate = (decimal)0.05;
             Balance = 0;
-            businessAccountID++;
+            cdAccountID++;
         }
         public override void MakeDeposit(decimal deposit, DateTime dateTime)
         {

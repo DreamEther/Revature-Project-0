@@ -16,7 +16,6 @@ namespace BankingApplication
 
         public string DepositString { get; set; }
         public List<Transaction> transactions = new List<Transaction>();
-        public List<String> transactionsAsString = new List<string>();
         public int AccountID { get; set; }
         public decimal Balance { get; set; }
 

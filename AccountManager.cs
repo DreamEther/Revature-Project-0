@@ -17,6 +17,9 @@ namespace BankingApplication
         {
         }
 
+        // Constructor takes in any account inheriting from Account and a customer instance retrieved from a unique pin
+        //that account is then added to the customer's instance list of accounts.
+        //Account instance foreign key reference CustomerID is then set equal to the current instance of customer's ID, which is Customer's primary key.
         public AccountManager(Account account, Customer customer)
         {
             _account = account; // set correct account type
@@ -129,8 +132,9 @@ namespace BankingApplication
             _account = account;
             if (_account.Balance > 0)
             {
-                Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
                 Console.Clear();
+                Console.WriteLine("Account must have a balance of $0 in order for you to close it.");
+                UI.OnEnterPress();
                 Program.ExecuteUserInput();
             }
             else

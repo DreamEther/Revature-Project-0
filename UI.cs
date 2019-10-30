@@ -30,10 +30,10 @@ namespace BankingApplication
             Console.WriteLine("You must sign in with your full name and pin before creating an account.");
             Console.WriteLine("Please enter your first name: ");
             string firstName = Console.ReadLine();
-            UI.StringOnlyCheck(firstName);
+            string firstNameCheck = StringOnlyCheck(firstName);
             Console.WriteLine("Please enter your last name:");
             string lastName = Console.ReadLine();
-            UI.StringOnlyCheck(lastName);
+            string lastNameCheck = StringOnlyCheck(lastName);
             Console.WriteLine("Please enter your unique pin number");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
@@ -46,7 +46,7 @@ namespace BankingApplication
             Customer customer = null;
             foreach (var cust in AccountManager.customers)
             {
-                if (firstName.ToLower() == cust.FirstName && lastName.ToLower() == cust.LastName && pinNumber == cust.Pin)
+                if (firstNameCheck.ToLower() == cust.FirstName && lastNameCheck.ToLower() == cust.LastName && pinNumber == cust.Pin)
                 {
                     customer = cust;
                     isFound = true;
@@ -172,14 +172,16 @@ namespace BankingApplication
             Console.WriteLine("To see a list of all transactions for an account, please enter the appropriate AccountID:");
             var answer = Console.ReadLine();
             int answerNum = CheckAccountNumber(answer);
+            Console.Clear();
             Account acc = customer.listOfAccounts.First(a => a.AccountID == answerNum);
             Console.WriteLine($"{acc.AccountType}, Account ID:{acc.AccountID} Current Balance: ${acc.Balance}");
-            // accountManager.DisplayListOfTransactions(acc);
             var listOfTransactionsInDes = acc.transactions.OrderByDescending(x => x.DateTime).ToList();
             foreach (var transaction in listOfTransactionsInDes)
             {
-                Console.WriteLine($"{transaction.TransactionAsString} on {transaction.DateTime}  Balance: {transaction.newBalance}");
+                Console.WriteLine($"{transaction.TransactionAsString} on {transaction.DateTime}  Balance: {transaction.NewBalance}");
             }
+            OnEnterPress();
+            Program.ExecuteUserInput();
         }
 
         public static void CloseAccount()
@@ -243,10 +245,10 @@ namespace BankingApplication
         {
             Console.WriteLine("Please enter your first name: ");
             string firstName = Console.ReadLine();
-            string firstNameSO = UI.StringOnlyCheck(firstName);
+            string firstNameSO = StringOnlyCheck(firstName);
             Console.WriteLine("Please enter your last name: ");
             string lastName = Console.ReadLine();
-            string lastNameSO = UI.StringOnlyCheck(lastName);
+            string lastNameSO = StringOnlyCheck(lastName);
             Console.WriteLine("Enter a unique user PIN(maximum of 4 numbers): ");
             string pin = Console.ReadLine();
             int pinNumber = UI.CheckPin(pin);
@@ -300,6 +302,8 @@ namespace BankingApplication
                 stringOutput = Console.ReadLine();
             }
             acc.MakeDeposit(output, DateTime.Now);
+            Console.WriteLine("Deposit was recieved!");
+            OnEnterPress();
             Program.ExecuteUserInput();
         }
 
@@ -436,7 +440,9 @@ namespace BankingApplication
         }
         public static string StringOnlyCheck(string name)
         {
-            while (!Regex.IsMatch(name, @"^[a-zA-Z]+$"))
+            // Regex is in the System.Text.RegularExpressions namespace
+            //it inherits from ISerializable, which allows an object to control its own serialization and deserialization.
+            while (!Regex.IsMatch(name, @"[a-zA-Z]"))
             {
                 Console.WriteLine("Incorrect Format: No numbers or special characters allowed in this field");
                 name = Console.ReadLine();
@@ -444,16 +450,18 @@ namespace BankingApplication
             return name;
         }
 
+        // prompt to go back to the selection menu
         public static void OnEnterPress()
         {
             Console.WriteLine("\nPlease press Enter to go back to the options menu...");
-            UI.WaitForKey(ConsoleKey.Enter);
+            WaitForKey(ConsoleKey.Enter);
             Console.Clear();
         }
+
+        // check that pin is 4 numbers long and tryParse the string
         public static int CheckPin(string pin)
         {
-
-            int pinNumber;
+            int pinNumber; // passing this as as a reference so an int after parsing is returned and stored in pinNumber.
             while (pin.Length != 4 || !Int32.TryParse(pin, out pinNumber)) // need this condition to continuosly execute if user enters more than 4 numbers
             {
                 Console.WriteLine("Incorrect Format: Please enter a unique user Pin that is 4 numbers long:");
@@ -462,6 +470,7 @@ namespace BankingApplication
             return pinNumber;
         }
 
+        //check for duplicate pins
         public static void CheckPin(Customer customer)
         {
             foreach(var cust in AccountManager.customers)
@@ -485,6 +494,7 @@ namespace BankingApplication
 
         }
 
+        //try parse withdraw amount
         public static decimal TryWithdraw(string amount)
         {
             decimal output;
@@ -495,6 +505,8 @@ namespace BankingApplication
             }
             return output;
         }
+
+        //check account number for proper length and tryParse the string
         public static int CheckAccountNumber(string accountNum)
         {
             int _accountNum;
@@ -506,12 +518,14 @@ namespace BankingApplication
             return _accountNum;
         }
 
+        //Registration validation
         public static void AddCustomerToList(string answer, Customer customer)
         {
             if (answer.Equals("Yes", StringComparison.InvariantCultureIgnoreCase))
             {
                 if (AccountManager.customers.Count == 0)
                 {
+                    Console.Clear();
                     AccountManager.customers.Add(customer);
                     Console.WriteLine("Great! You have been registered as a customer of GenericBank!");
                     OnEnterPress();
@@ -528,6 +542,7 @@ namespace BankingApplication
             }
         }
 
+        //check for null account
         public static void CheckAccountNumber(Account account)
         {
             if (account == null)
@@ -538,6 +553,7 @@ namespace BankingApplication
             }
         }
 
+        //check for empty customer list
         public static void CheckForCustomer()
         {
             if (AccountManager.customers.Count == 0)

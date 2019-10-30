@@ -10,11 +10,11 @@ namespace BankingApplication
         public DateTime DateTime { get; set; }
         public string TransactionAsString { get; set; }
 
-        public decimal newBalance;
-        public Transaction(decimal balance, string amount, decimal transactionAmount, DateTime dateTime)
+        public decimal NewBalance { get; set; }
+        public Transaction(decimal balance, string amountAsString, decimal transactionAmount, DateTime dateTime)
         {
-            newBalance = balance;
-            TransactionAsString = amount;
+            NewBalance = balance;
+            TransactionAsString = amountAsString;
             TransactionAmount = transactionAmount;
             DateTime = dateTime;
         }
